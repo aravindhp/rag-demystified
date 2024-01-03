@@ -71,7 +71,7 @@ def generate_subquestions(question,
                               system_prompt=system_prompt,
                               user_prompt=user_prompt)
 
-    subquestions_list = json.loads(response["choices"][0]["message"]["function_call"]["arguments"])
+    subquestions_list = json.loads(response.choices[0].message.function_call.arguments)
 
     subquestions_pydantic_obj = SubQuestionBundleList(**subquestions_list)
     subquestions_list = subquestions_pydantic_obj.subquestion_bundle_list

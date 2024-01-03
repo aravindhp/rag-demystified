@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     vector_stores = generate_vector_stores(cursor, wiki_docs)
 
-    llm_model = "gpt-35-turbo"
+    llm_model = "gpt-3.5-turbo"
     total_cost = 0
     while True:
         question_cost = 0
@@ -163,7 +163,7 @@ if __name__ == "__main__":
         question = str(input("Question (enter 'exit' to exit): "))
         if question.lower() == "exit":
             break
-        print("🧠 Generating subquestions...")
+
         subquestions_bundle_list, cost = generate_subquestions(question=question,
                                                                data_sources=doc_names,
                                                                user_task=user_task,

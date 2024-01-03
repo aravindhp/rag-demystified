@@ -1,7 +1,9 @@
 import sys
 import logging
 
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 import tiktoken
 
 from tenacity import (
@@ -16,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 OPENAI_PRICING = {
     'gpt-35-turbo': {'prompt': 0.0015, 'completion': 0.002},
+    'gpt-3.5-turbo-0613': {'prompt': 0.0015, 'completion': 0.002},
     'gpt-35-turbo-16k': {'prompt': 0.003, 'completion': 0.004},
     'gpt-4-0613': {'prompt': 0.03, 'completion': 0.06},
     'gpt-4-32k': {'prompt': 0.06, 'completion': 0.12},
@@ -37,17 +40,17 @@ OPENAI_MODEL_CONTEXT_LENGTH = {
     after=after_log(logger, logging.INFO),
 )
 def completion_with_backoff(**kwargs):
-    return openai.ChatCompletion.create(**kwargs)
+    return client.chat.completions.create(**kwargs)
 
 
 def llm_call_cost(response):
     """Returns the cost of the LLM call in dollars"""
-    model = response["model"]
-    usage = response["usage"]
+    model = response.model
+    usage = response.usage
     prompt_cost = OPENAI_PRICING[model]["prompt"]
     completion_cost = OPENAI_PRICING[model]["completion"]
-    prompt_token_cost = (usage["prompt_tokens"] * prompt_cost)/1000
-    completion_token_cost = (usage["completion_tokens"] * completion_cost)/1000
+    prompt_token_cost = (usage.prompt_tokens * prompt_cost)/1000
+    completion_token_cost = (usage.completion_tokens * completion_cost)/1000
     return prompt_token_cost + completion_token_cost
 
 
